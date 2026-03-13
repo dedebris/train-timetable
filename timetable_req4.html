@@ -200,7 +200,7 @@
             position: absolute;
             top: 100%;
             right: 0;
-            z-index: 100;
+            z-index: 1000;
             background: white;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -229,7 +229,8 @@
         .filter-option strong {
             font-size: 1.1em;
             color: var(--primary-color);
-            margin-right: 2px;
+            margin-right: 4px;
+            white-space: nowrap;
         }
         .filter-option:last-child { border-bottom: none; }
         .filter-option input { margin: 0; flex-shrink: 0; }
