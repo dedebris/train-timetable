@@ -210,21 +210,33 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border-radius: 8px;
             padding: 12px;
-            padding-top: 36px; /* 閉じるボタン用の余白 */
             min-width: 240px;
             max-width: 320px;
         }
         .filter-close-btn {
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            font-size: 24px;
+            position: sticky;
+            top: -4px;
+            float: right;
+            z-index: 10;
+            width: 28px;
+            height: 28px;
+            background: #f1f3f5;
+            color: #495057;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
             cursor: pointer;
-            color: #999;
-            line-height: 1;
-            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: -28px; /* コンテンツに被せるため */
+            transition: all 0.2s;
         }
-        .filter-close-btn:hover { color: var(--text-main); }
+        .filter-close-btn:hover { 
+            background: #fa5252; 
+            color: white; 
+            transform: scale(1.1);
+        }
         .filter-popup.active { display: block; }
         .filter-option { 
             display: flex; 
