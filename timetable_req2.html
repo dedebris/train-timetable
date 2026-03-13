@@ -90,13 +90,17 @@
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow-x: auto; /* モバイル等で横スクロールを許可 */
-            overflow-y: visible;
             border: 1px solid var(--border-color);
+            position: relative; /* 子のポップアップの基準にするため */
+        }
+        
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
         
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { 
             background-color: #f8f9fa; 
             color: var(--text-sub); 
@@ -198,9 +202,9 @@
         .filter-popup {
             display: none;
             position: absolute;
-            top: 100%;
-            right: 0;
-            z-index: 2000;
+            top: 40px;
+            right: 20px;
+            z-index: 100000;
             background: white;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -296,20 +300,21 @@
             .route-cell { min-width: 100px; }
             .section-cell { min-width: 120px; }
             
-            /* モバイルではポップアップを画面上部に固定表示する */
+            /* モバイルではポップアップを画面中央付近に固定表示する */
             .filter-popup {
                 position: fixed !important;
-                top: 20px;
+                top: 10px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 90%;
-                max-width: 400px;
-                max-height: 90vh;
+                width: 95%;
+                max-width: 450px;
+                max-height: 95vh;
                 overflow-y: auto;
                 right: auto;
                 bottom: auto;
-                z-index: 9999;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+                z-index: 100000;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+                border: 2px solid var(--primary-color);
             }
         }
     </style>
@@ -331,30 +336,22 @@
         <section>
             <h2>新幹線・特急列車</h2>
             <div class="card">
-                <table id="trainTable">
-                    <thead>
-                        <tr>
-                            <th>時刻</th>
-                            <th>
-                                <span>番線</span>
-                                <span class="pf-filter-btn" id="pfFilterBtn">▼</span>
-                                <div class="filter-popup" id="pfFilterPopup">
-                                    <div id="pfOptions">
-                                        <label class='filter-option'><input type='checkbox' value='４' checked> <strong>４</strong> 湘南新宿ライン（南行）</label><label class='filter-option'><input type='checkbox' value='６' checked> <strong>６</strong> 宇都宮線、湘南新宿ライン（南行）、高崎線(上野東京ライン)（上り）</label><label class='filter-option'><input type='checkbox' value='７' checked> <strong>７</strong> 宇都宮線、高崎線(上野東京ライン)（上り）、高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='８' checked> <strong>８</strong> 高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='１１' checked> <strong>１１</strong> 埼京線、宇都宮線(東北本線)（下り）、川越線（下り）、高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='１３' checked> <strong>１３</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１４' checked> <strong>１４</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１５' checked> <strong>１５</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１７' checked> <strong>１７</strong> 北海道新幹線（下り）、山形新幹線（下り）、東北、秋田新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='１８' checked> <strong>１８</strong> 上越新幹線（下り）、北陸新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='１９' checked> <strong>１９</strong> 埼京線、川越線（上り）</label>
-                                    </div>
-                                    <div class="filter-actions">
-                                        <button id="pfAll">すべて</button>
-                                        <button id="pfNone">解除</button>
-                                    </div>
-                                </div>
-                            </th>
-                            <th>列車名 / 車両</th>
-                            <th>路線</th>
-                            <th>区間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    
+                <div class="table-wrapper">
+                    <table id="trainTable">
+                        <thead>
+                            <tr>
+                                <th>時刻</th>
+                                <th>
+                                    <span>番線</span>
+                                    <span class="pf-filter-btn" id="pfFilterBtn">▼</span>
+                                </th>
+                                <th>列車名 / 車両</th>
+                                <th>路線</th>
+                                <th>区間</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
         <tr class='train-row' data-arr-min='899' data-dep-min='900' data-pf='１４'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013861.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:59</span><span class='time-sub'>着</span> <span class='time-val'>15:00</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/350.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
@@ -10708,6 +10705,17 @@
     
                     </tbody>
                 </table>
+            </div>
+                <!-- フィルターポップアップをスクロールエリアの外に配置 -->
+                <div class="filter-popup" id="pfFilterPopup">
+                    <div id="pfOptions">
+                        <label class='filter-option'><input type='checkbox' value='４' checked> <strong>４</strong> 湘南新宿ライン（南行）</label><label class='filter-option'><input type='checkbox' value='６' checked> <strong>６</strong> 宇都宮線、湘南新宿ライン（南行）、高崎線(上野東京ライン)（上り）</label><label class='filter-option'><input type='checkbox' value='７' checked> <strong>７</strong> 宇都宮線、高崎線(上野東京ライン)（上り）、高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='８' checked> <strong>８</strong> 高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='１１' checked> <strong>１１</strong> 埼京線、宇都宮線(東北本線)（下り）、川越線（下り）、高崎線（下り）</label><label class='filter-option'><input type='checkbox' value='１３' checked> <strong>１３</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１４' checked> <strong>１４</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１５' checked> <strong>１５</strong> 上越、北陸新幹線（上り）、東北</label><label class='filter-option'><input type='checkbox' value='１７' checked> <strong>１７</strong> 北海道新幹線（下り）、山形新幹線（下り）、東北、秋田新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='１８' checked> <strong>１８</strong> 上越新幹線（下り）、北陸新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='１９' checked> <strong>１９</strong> 埼京線、川越線（上り）</label>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="pfAll">すべて</button>
+                        <button id="pfNone">解除</button>
+                    </div>
+                </div>
             </div>
         </section>
     
