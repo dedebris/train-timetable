@@ -2107,8 +2107,10 @@
                 const nowMin = now.getHours() * 60 + now.getMinutes();
                 const isTimeFilterActive = timeFilter.checked;
                 
-                const activePlatforms = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
-                const activeModels = Array.from(modelOptions.querySelectorAll('input:checked')).map(i => i.value);
+                const pfInputs = Array.from(pfOptions.querySelectorAll('input'));
+                const activePlatforms = pfInputs.filter(i => i.checked).map(i => i.value);
+                const modelInputs = Array.from(modelOptions.querySelectorAll('input'));
+                const activeModels = modelInputs.filter(i => i.checked).map(i => i.value);
                 
                 console.log('Filter Update:', {
                     platforms: activePlatforms.length,
@@ -2130,10 +2132,13 @@
                         }
                     }
 
-                    let pfOk = activePlatforms.includes(pf) || pf === "";
+                    let pfOk = true;
+                    if (pfInputs.length > 0) {
+                        pfOk = activePlatforms.includes(pf) || pf === "";
+                    }
                     
                     let modelOk = true;
-                    if (activeModels.length > 0) {
+                    if (modelInputs.length > 0) {
                         const rowModelStr = row.dataset.trainModel || "";
                         if (rowModelStr) {
                             const rowModels = rowModelStr.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
