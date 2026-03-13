@@ -1057,11 +1057,11 @@
             <td class='section-cell'>盛岡－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='414' data-pf='１４' data-train-model=''>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='414' data-pf='１４' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/040/044921.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>06:54</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
             <td class='name-cell'>
-                <span class='badge badge-default'>はやて 93号</span>
+                <span class='badge badge-shinkansen'>はやて 93号</span>
                 <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
             </td>
             <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
@@ -1692,6 +1692,12 @@
                 
                 const activePlatforms = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
                 const activeModels = Array.from(modelOptions.querySelectorAll('input:checked')).map(i => i.value);
+                
+                console.log('Filter Update:', {
+                    platforms: activePlatforms.length,
+                    models: activeModels.length,
+                    timeFilter: isTimeFilterActive
+                });
 
                 trainRows.forEach(row => {
                     const arrMin = parseInt(row.dataset.arrMin);
@@ -1711,13 +1717,16 @@
                     
                     let modelOk = true;
                     if (activeModels.length > 0) {
-                        // 行のモデル（連結対応）のいずれかが選択されていればOK
-                        const rowModels = model.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
-                        if (rowModels.length > 0) {
-                            modelOk = rowModels.some(rm => activeModels.includes(rm));
+                        const rowModelStr = row.dataset.trainModel || "";
+                        if (rowModelStr) {
+                            const rowModels = rowModelStr.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
+                            if (rowModels.length > 0) {
+                                modelOk = rowModels.some(rm => activeModels.includes(rm));
+                            } else {
+                                modelOk = activeModels.includes("特急");
+                            }
                         } else {
-                            // モデル情報がない列車（特急など）
-                            modelOk = activeModels.includes("特急") || model === "";
+                            modelOk = activeModels.includes("特急") || rowModelStr === "";
                         }
                     }
 
@@ -1733,6 +1742,7 @@
 
             timeFilter.addEventListener('change', applyFilters);
             pfOptions.addEventListener('change', applyFilters);
+            modelOptions.addEventListener('change', applyFilters);
 
             pfFilterBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
