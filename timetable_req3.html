@@ -210,9 +210,21 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border-radius: 8px;
             padding: 12px;
-            min-width: 260px;
-            max-width: calc(100vw - 40px);
+            padding-top: 36px; /* 閉じるボタン用の余白 */
+            min-width: 240px;
+            max-width: 320px;
         }
+        .filter-close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 4px;
+        }
+        .filter-close-btn:hover { color: var(--text-main); }
         .filter-popup.active { display: block; }
         .filter-option { 
             display: flex; 
@@ -303,12 +315,12 @@
             /* モバイルではポップアップを画面中央付近に固定表示する */
             .filter-popup {
                 position: fixed !important;
-                top: 10px;
+                top: 50%;
                 left: 50%;
-                transform: translateX(-50%);
-                width: 95%;
-                max-width: 450px;
-                max-height: 95vh;
+                transform: translate(-50%, -50%);
+                width: 85%;
+                max-width: 340px;
+                max-height: 80vh;
                 overflow-y: auto;
                 right: auto;
                 bottom: auto;
@@ -1479,6 +1491,7 @@
             </div>
                 <!-- フィルターポップアップをスクロールエリアの外に配置 -->
                 <div class="filter-popup" id="pfFilterPopup">
+                    <span class="filter-close-btn" id="pfCloseBtn">&times;</span>
                     <div id="pfOptions">
                         <label class='filter-option'><input type='checkbox' value='１１' checked> <strong>１１</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１２' checked> <strong>１２</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１３' checked> <strong>１３</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１４' checked> <strong>１４</strong> 北海道新幹線（下り）、東北、秋田新幹線（下り）</label>
                     </div>
@@ -1557,6 +1570,7 @@
             const timeFilter = document.getElementById('timeFilter');
             const pfFilterBtn = document.getElementById('pfFilterBtn');
             const pfFilterPopup = document.getElementById('pfFilterPopup');
+            const pfCloseBtn = document.getElementById('pfCloseBtn');
             const pfOptions = document.getElementById('pfOptions');
             const pfAll = document.getElementById('pfAll');
             const pfNone = document.getElementById('pfNone');
@@ -1634,6 +1648,10 @@
                 if (!pfFilterPopup.contains(e.target) && e.target !== pfFilterBtn) {
                     pfFilterPopup.classList.remove('active');
                 }
+            });
+
+            pfCloseBtn.addEventListener('click', () => {
+                pfFilterPopup.classList.remove('active');
             });
 
             pfAll.addEventListener('click', () => {

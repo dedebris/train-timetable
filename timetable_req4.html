@@ -210,9 +210,21 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border-radius: 8px;
             padding: 12px;
-            min-width: 260px;
-            max-width: calc(100vw - 40px);
+            padding-top: 36px; /* 閉じるボタン用の余白 */
+            min-width: 240px;
+            max-width: 320px;
         }
+        .filter-close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 4px;
+        }
+        .filter-close-btn:hover { color: var(--text-main); }
         .filter-popup.active { display: block; }
         .filter-option { 
             display: flex; 
@@ -303,12 +315,12 @@
             /* モバイルではポップアップを画面中央付近に固定表示する */
             .filter-popup {
                 position: fixed !important;
-                top: 10px;
+                top: 50%;
                 left: 50%;
-                transform: translateX(-50%);
-                width: 95%;
-                max-width: 450px;
-                max-height: 95vh;
+                transform: translate(-50%, -50%);
+                width: 85%;
+                max-width: 340px;
+                max-height: 80vh;
                 overflow-y: auto;
                 right: auto;
                 bottom: auto;
@@ -1490,6 +1502,7 @@
             </div>
                 <!-- フィルターポップアップをスクロールエリアの外に配置 -->
                 <div class="filter-popup" id="pfFilterPopup">
+                    <span class="filter-close-btn" id="pfCloseBtn">&times;</span>
                     <div id="pfOptions">
                         <label class='filter-option'><input type='checkbox' value='１' checked> <strong>１</strong> 中央線快速（下り）、成田エクスプレス（下り）、横須賀線（下り）</label><label class='filter-option'><input type='checkbox' value='京１' checked> 京<strong>１</strong> 京葉線、武蔵野線（下り）</label><label class='filter-option'><input type='checkbox' value='２' checked> <strong>２</strong> 総武線快速（下り）</label><label class='filter-option'><input type='checkbox' value='４' checked> <strong>４</strong> 成田エクスプレス（下り）、横須賀線（上り）、湘南新宿ライン（南行）、総武線快速（下り）</label><label class='filter-option'><input type='checkbox' value='７' checked> <strong>７</strong> 上野東京ライン(常磐線)（下り）、常磐線快速（下り）</label><label class='filter-option'><input type='checkbox' value='８' checked> <strong>８</strong> 上野東京ライン(常磐線)（下り）、常磐線快速（下り）、東海道線(上野東京ライン)（上り）</label><label class='filter-option'><input type='checkbox' value='９' checked> <strong>９</strong> 上野東京ライン(宇都宮線、常磐線)（下り）、東海道線(上野東京ライン)（下り）、高崎線</label><label class='filter-option'><input type='checkbox' value='１０' checked> <strong>１０</strong> 上野東京ライン(宇都宮線、常磐線)（下り）、東海道線(上野東京ライン)（下り）、高崎線</label><label class='filter-option'><input type='checkbox' value='２０' checked> <strong>２０</strong> 上越、上越新幹線（下り）、北海道新幹線（下り）、北陸新幹線（上り）、北陸新幹線（下り）、山形新幹線（下り）、東北、秋田新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='２１' checked> <strong>２１</strong> 上越、上越新幹線（下り）、北海道新幹線（下り）、北陸新幹線（上り）、北陸新幹線（下り）、山形新幹線（下り）、東北、秋田新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='２２' checked> <strong>２２</strong> 上越、上越新幹線（下り）、北海道新幹線（下り）、北陸新幹線（上り）、北陸新幹線（下り）、山形新幹線（下り）、東北、秋田新幹線（下り）</label><label class='filter-option'><input type='checkbox' value='２３' checked> <strong>２３</strong> 上越、上越新幹線（下り）、北海道新幹線（下り）、北陸新幹線（上り）、北陸新幹線（下り）、山形新幹線（下り）、東北</label>
                     </div>
@@ -1592,6 +1605,7 @@
             const timeFilter = document.getElementById('timeFilter');
             const pfFilterBtn = document.getElementById('pfFilterBtn');
             const pfFilterPopup = document.getElementById('pfFilterPopup');
+            const pfCloseBtn = document.getElementById('pfCloseBtn');
             const pfOptions = document.getElementById('pfOptions');
             const pfAll = document.getElementById('pfAll');
             const pfNone = document.getElementById('pfNone');
@@ -1669,6 +1683,10 @@
                 if (!pfFilterPopup.contains(e.target) && e.target !== pfFilterBtn) {
                     pfFilterPopup.classList.remove('active');
                 }
+            });
+
+            pfCloseBtn.addEventListener('click', () => {
+                pfFilterPopup.classList.remove('active');
             });
 
             pfAll.addEventListener('click', () => {
