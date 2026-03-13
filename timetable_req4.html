@@ -90,8 +90,10 @@
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow: visible; /* ポップアップ表示のため */
+            overflow-x: auto; /* モバイル等で横スクロールを許可 */
+            overflow-y: visible;
             border: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch;
         }
         
         table { width: 100%; border-collapse: collapse; }
@@ -281,9 +283,13 @@
         
         @media (max-width: 768px) {
             .header h1 { font-size: 1.5rem; }
-            th:nth-child(4), td:nth-child(4),
-            th:nth-child(5), td:nth-child(5) { display: none; }
-            .time-cell { min-width: 120px; }
+            .container { padding: 10px; }
+            td, th { padding: 12px 8px; font-size: 0.8rem; }
+            .time-cell { min-width: 130px; }
+            .pf-cell { min-width: 60px; }
+            .name-cell { min-width: 150px; }
+            .route-cell { min-width: 100px; }
+            .section-cell { min-width: 120px; }
         }
     </style>
 </head>
