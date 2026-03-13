@@ -1,0 +1,22 @@
+# すべてを無視
+*
+
+# ディレクトリの探索を許可
+!*/
+
+# HTMLファイルのみ除外設定を解除
+!*.html
+
+# .gitignore 自体は管理対象に含める
+!.gitignore
+
+# 明示的にキャッシュフォルダ等を除外（念のため）
+scraper_cache/
+venv/
+.gemini/
+__pycache__/
+.vscode/
+.idea/
+*.pyc
+*.log
+results.json
