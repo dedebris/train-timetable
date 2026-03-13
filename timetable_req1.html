@@ -154,6 +154,24 @@
         .badge-limited-express { background: #fff1f0; color: var(--limited-express-color); border: 1px solid #ffa39e; }
         .badge-default { background: #f5f5f5; color: #555; border: 1px solid #ddd; }
         
+        .model-filter-btn {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            color: #aaa;
+            font-size: 0.8em;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        .model-filter-btn:hover { background: #e2e8f0; color: var(--primary-color); }
+
+        /* モデルバッジをフィルター内に並べるためのスタイル */
+        .filter-option .badge {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        
         .train-name-link { text-decoration: none; display: inline-block; transition: opacity 0.2s; }
         .train-name-link:hover { opacity: 0.8; }
         
@@ -369,14 +387,17 @@
                                     <span>番線</span>
                                     <span class="pf-filter-btn" id="pfFilterBtn">▼</span>
                                 </th>
-                                <th>列車名 / 車両</th>
+                                <th>
+                                    <span>列車名 / 車両</span>
+                                    <span class="model-filter-btn" id="modelFilterBtn">▼</span>
+                                </th>
                                 <th>路線</th>
                                 <th>区間</th>
                             </tr>
                         </thead>
                         <tbody>
         
-        <tr class='train-row' data-arr-min='837' data-dep-min='843' data-pf='４'>
+        <tr class='train-row' data-arr-min='837' data-dep-min='843' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031151.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>13:57</span><span class='time-sub'>着</span> <span class='time-val'>14:03</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -387,7 +408,7 @@
             <td class='section-cell'>大船－成田空港、新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='840' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='840' data-pf='２０' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030121.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -398,7 +419,7 @@
             <td class='section-cell'>東京－仙台、東京－福島－新庄</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='840' data-pf='京１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='840' data-pf='京１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/049471.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>京１</span></a></td>
             <td class='name-cell'>
@@ -409,7 +430,7 @@
             <td class='section-cell'>東京－安房鴨川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='840' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='840' data-dep-min='9999' data-pf='２３' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087501.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:00</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -420,7 +441,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='844' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='844' data-pf='２１' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038721.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:04</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -431,7 +452,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='848' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='848' data-dep-min='9999' data-pf='２１' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033632.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:08</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -442,7 +463,7 @@
             <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='852' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='852' data-pf='２０' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021821.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:12</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -453,7 +474,7 @@
             <td class='section-cell'>東京－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='852' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='852' data-dep-min='9999' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038991.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:12</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -464,7 +485,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='854' data-dep-min='855' data-pf='９'>
+        <tr class='train-row' data-arr-min='854' data-dep-min='855' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/050301.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:14</span><span class='time-sub'>着</span> <span class='time-val'>14:15</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -475,7 +496,7 @@
             <td class='section-cell'>勝田－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='855' data-dep-min='9999' data-pf='１'>
+        <tr class='train-row' data-arr-min='855' data-dep-min='9999' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063381.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:15</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -486,7 +507,7 @@
             <td class='section-cell'>成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='856' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='856' data-pf='２３' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087461.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:16</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -497,7 +518,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='856' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='856' data-dep-min='9999' data-pf='２０' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021841.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:16</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -508,7 +529,7 @@
             <td class='section-cell'>仙台－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='859' data-dep-min='9999' data-pf='９'>
+        <tr class='train-row' data-arr-min='859' data-dep-min='9999' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/064221.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:19</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -519,7 +540,7 @@
             <td class='section-cell'>伊豆急下田－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='860' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='860' data-pf='２１' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130271.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:20</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -530,7 +551,7 @@
             <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='860' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='860' data-dep-min='9999' data-pf='２３' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039411.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:20</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -541,7 +562,7 @@
             <td class='section-cell'>金沢－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='862' data-dep-min='863' data-pf='８'>
+        <tr class='train-row' data-arr-min='862' data-dep-min='863' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048332.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:22</span><span class='time-sub'>着</span> <span class='time-val'>14:23</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -552,7 +573,7 @@
             <td class='section-cell'>品川－勝田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='864' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='864' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098701.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:24</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -563,7 +584,7 @@
             <td class='section-cell'>東京－敦賀</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='864' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='864' data-dep-min='9999' data-pf='２０' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013612.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:24</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -574,7 +595,7 @@
             <td class='section-cell'>盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='868' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='868' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111641.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:28</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -585,7 +606,7 @@
             <td class='section-cell'>東京－新青森</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='868' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='868' data-dep-min='9999' data-pf='２２' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/045001.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:28</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -596,7 +617,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='871' data-dep-min='9999' data-pf='４'>
+        <tr class='train-row' data-arr-min='871' data-dep-min='9999' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031481.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:31</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -607,7 +628,7 @@
             <td class='section-cell'>新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='872' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='872' data-dep-min='9999' data-pf='２０' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111731.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:32</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -618,7 +639,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='872' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='872' data-dep-min='9999' data-pf='２０' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111741.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:32</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -629,7 +650,7 @@
             <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='876' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='876' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062251.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:36</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -640,7 +661,7 @@
             <td class='section-cell'>東京－盛岡</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='876' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='876' data-dep-min='9999' data-pf='２３' data-train-model='E2系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/015/017511.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:36</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -651,7 +672,7 @@
             <td class='section-cell'>仙台－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='879' data-pf='２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='879' data-pf='２' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038221.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:39</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２</span></a></td>
             <td class='name-cell'>
@@ -662,7 +683,7 @@
             <td class='section-cell'>東京－銚子</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='880' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='880' data-pf='２２' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/040/044961.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:40</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -673,7 +694,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='880' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='880' data-dep-min='9999' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039301.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:40</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -684,7 +705,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='882' data-dep-min='883' data-pf='１０'>
+        <tr class='train-row' data-arr-min='882' data-dep-min='883' data-pf='１０' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098821.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:42</span><span class='time-sub'>着</span> <span class='time-val'>14:43</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１０</span></a></td>
             <td class='name-cell'>
@@ -695,7 +716,7 @@
             <td class='section-cell'>いわき－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='884' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='884' data-pf='２０' data-train-model='E5系/H5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130221.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -706,7 +727,7 @@
             <td class='section-cell'>東京－新青森</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='884' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='884' data-dep-min='9999' data-pf='２２' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131151.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -717,7 +738,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='884' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='884' data-dep-min='9999' data-pf='２２' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087511.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -728,7 +749,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='885' data-dep-min='887' data-pf='１'>
+        <tr class='train-row' data-arr-min='885' data-dep-min='887' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063441.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:45</span><span class='time-sub'>着</span> <span class='time-val'>14:47</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -739,7 +760,7 @@
             <td class='section-cell'>成田空港－大船、成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='888' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='888' data-pf='２３' data-train-model='E2系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/015/017521.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -750,7 +771,7 @@
             <td class='section-cell'>東京－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='888' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='888' data-pf='２３' data-train-model='E3系/E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/025/025621.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -761,7 +782,7 @@
             <td class='section-cell'>東京－福島－山形</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='888' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='888' data-dep-min='9999' data-pf='２１' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030241.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:48</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -772,7 +793,7 @@
             <td class='section-cell'>仙台－東京、新庄－福島－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='889' data-dep-min='9999' data-pf='８'>
+        <tr class='train-row' data-arr-min='889' data-dep-min='9999' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/064151.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:49</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -783,7 +804,7 @@
             <td class='section-cell'>伊豆急下田－東京、修善寺－熱海－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='892' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='892' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130401.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:52</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -794,7 +815,7 @@
             <td class='section-cell'>東京－金沢</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='892' data-dep-min='893' data-pf='７'>
+        <tr class='train-row' data-arr-min='892' data-dep-min='893' data-pf='７' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048342.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:52</span><span class='time-sub'>着</span> <span class='time-val'>14:53</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>７</span></a></td>
             <td class='name-cell'>
@@ -805,7 +826,7 @@
             <td class='section-cell'>品川－いわき</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='892' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='892' data-dep-min='9999' data-pf='２３' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098731.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:52</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -816,7 +837,7 @@
             <td class='section-cell'>敦賀－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='896' data-dep-min='903' data-pf='４'>
+        <tr class='train-row' data-arr-min='896' data-dep-min='903' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031161.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:56</span><span class='time-sub'>着</span> <span class='time-val'>15:03</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -827,7 +848,7 @@
             <td class='section-cell'>大船－成田空港、新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='896' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='896' data-dep-min='9999' data-pf='２０' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/055/055801.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>14:56</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -838,7 +859,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='900' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='900' data-pf='２１' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030111.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -849,7 +870,7 @@
             <td class='section-cell'>東京－仙台、東京－福島－山形</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='900' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='900' data-dep-min='9999' data-pf='２２' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087521.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:00</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -860,7 +881,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='904' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='904' data-pf='２３' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038811.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:04</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -871,7 +892,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='904' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='904' data-dep-min='9999' data-pf='２１' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033822.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:04</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -882,7 +903,7 @@
             <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='912' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='912' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/025/029911.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:12</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -893,7 +914,7 @@
             <td class='section-cell'>東京－郡山</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='912' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='912' data-dep-min='9999' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039061.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:12</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -904,7 +925,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='914' data-dep-min='915' data-pf='９'>
+        <tr class='train-row' data-arr-min='914' data-dep-min='915' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/075/076481.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:14</span><span class='time-sub'>着</span> <span class='time-val'>15:15</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -915,7 +936,7 @@
             <td class='section-cell'>勝田－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='915' data-pf='１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='915' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063571.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:15</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -926,7 +947,7 @@
             <td class='section-cell'>東京－甲府</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='915' data-dep-min='9999' data-pf='１'>
+        <tr class='train-row' data-arr-min='915' data-dep-min='9999' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031211.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:15</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -937,7 +958,7 @@
             <td class='section-cell'>成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='916' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='916' data-pf='２２' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/125/128381.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:16</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -948,7 +969,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='916' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='916' data-dep-min='9999' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/022111.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:16</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -959,7 +980,7 @@
             <td class='section-cell'>郡山－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='919' data-dep-min='9999' data-pf='９'>
+        <tr class='train-row' data-arr-min='919' data-dep-min='9999' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/064241.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:19</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -970,7 +991,7 @@
             <td class='section-cell'>伊豆急下田－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='920' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='920' data-pf='２１' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130281.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:20</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -981,7 +1002,7 @@
             <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='920' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='920' data-dep-min='9999' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039421.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:20</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -992,7 +1013,7 @@
             <td class='section-cell'>金沢－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='922' data-dep-min='923' data-pf='８'>
+        <tr class='train-row' data-arr-min='922' data-dep-min='923' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048351.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:22</span><span class='time-sub'>着</span> <span class='time-val'>15:23</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1003,7 +1024,7 @@
             <td class='section-cell'>品川－勝田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='924' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='924' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098711.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:24</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1014,7 +1035,7 @@
             <td class='section-cell'>東京－敦賀</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='924' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='924' data-dep-min='9999' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013861.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:24</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1025,7 +1046,7 @@
             <td class='section-cell'>盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='928' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='928' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111651.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:28</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1036,7 +1057,7 @@
             <td class='section-cell'>東京－新青森</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='928' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='928' data-dep-min='9999' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/052361.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:28</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1047,7 +1068,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='931' data-dep-min='9999' data-pf='４'>
+        <tr class='train-row' data-arr-min='931' data-dep-min='9999' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/075/076561.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:31</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -1058,7 +1079,7 @@
             <td class='section-cell'>新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='932' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='932' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/054621.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:32</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1069,7 +1090,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='932' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='932' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111881.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:32</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1080,7 +1101,7 @@
             <td class='section-cell'>東京－金沢</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='932' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='932' data-dep-min='9999' data-pf='２３' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111761.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:32</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1091,7 +1112,7 @@
             <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='932' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='932' data-dep-min='9999' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111751.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:32</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1102,7 +1123,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='936' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='936' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062241.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:36</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1113,7 +1134,7 @@
             <td class='section-cell'>東京－盛岡</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='940' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='940' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098311.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:40</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1124,7 +1145,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='940' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='940' data-dep-min='9999' data-pf='２１' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039311.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:40</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1135,7 +1156,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='942' data-dep-min='943' data-pf='９'>
+        <tr class='train-row' data-arr-min='942' data-dep-min='943' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048521.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:42</span><span class='time-sub'>着</span> <span class='time-val'>15:43</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -1146,7 +1167,7 @@
             <td class='section-cell'>いわき－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131031.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1157,7 +1178,7 @@
             <td class='section-cell'>東京－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131051.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1168,7 +1189,7 @@
             <td class='section-cell'>東京－盛岡</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131061.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1179,7 +1200,7 @@
             <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='944' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131041.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1190,7 +1211,7 @@
             <td class='section-cell'>東京－新青森</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='944' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='944' data-dep-min='9999' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087531.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1201,7 +1222,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='944' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='944' data-dep-min='9999' data-pf='２０' data-train-model='E7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/052001.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1212,7 +1233,7 @@
             <td class='section-cell'>ガーラ湯沢－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='945' data-dep-min='947' data-pf='１'>
+        <tr class='train-row' data-arr-min='945' data-dep-min='947' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031461.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:45</span><span class='time-sub'>着</span> <span class='time-val'>15:47</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -1223,7 +1244,7 @@
             <td class='section-cell'>成田空港－大船、成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='948' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='948' data-pf='２２' data-train-model='E3系/E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030981.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1234,7 +1255,7 @@
             <td class='section-cell'>東京－福島－山形</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='948' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='948' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130411.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1245,7 +1266,7 @@
             <td class='section-cell'>東京－金沢</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='948' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='948' data-dep-min='9999' data-pf='２３' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030231.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:48</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1256,7 +1277,7 @@
             <td class='section-cell'>仙台－東京、山形－福島－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='949' data-dep-min='9999' data-pf='８'>
+        <tr class='train-row' data-arr-min='949' data-dep-min='9999' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/099001.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:49</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1267,7 +1288,7 @@
             <td class='section-cell'>伊豆急下田－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='952' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='952' data-pf='２１' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038821.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:52</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1278,7 +1299,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='952' data-dep-min='953' data-pf='７'>
+        <tr class='train-row' data-arr-min='952' data-dep-min='953' data-pf='７' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098791.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:52</span><span class='time-sub'>着</span> <span class='time-val'>15:53</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>７</span></a></td>
             <td class='name-cell'>
@@ -1289,7 +1310,7 @@
             <td class='section-cell'>品川－いわき</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='952' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='952' data-dep-min='9999' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098741.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:52</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1300,7 +1321,7 @@
             <td class='section-cell'>敦賀－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='956' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='956' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/099051.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:56</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1311,7 +1332,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='956' data-dep-min='963' data-pf='４'>
+        <tr class='train-row' data-arr-min='956' data-dep-min='963' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031171.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:56</span><span class='time-sub'>着</span> <span class='time-val'>16:03</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -1322,7 +1343,7 @@
             <td class='section-cell'>大船－成田空港、新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='956' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='956' data-dep-min='9999' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111001.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>15:56</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1333,7 +1354,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='960' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='960' data-pf='２３' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/025/029881.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1344,7 +1365,7 @@
             <td class='section-cell'>東京－仙台、東京－福島－新庄</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='960' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='960' data-dep-min='9999' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087541.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:00</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1355,7 +1376,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='964' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='964' data-pf='２２' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062191.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:04</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1366,7 +1387,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='964' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='964' data-dep-min='9999' data-pf='２３' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111201.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:04</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1377,7 +1398,7 @@
             <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='972' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='972' data-pf='２２' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098261.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:12</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1388,7 +1409,7 @@
             <td class='section-cell'>東京－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='972' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='972' data-dep-min='9999' data-pf='２１' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039001.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:12</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1399,7 +1420,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='974' data-dep-min='975' data-pf='９'>
+        <tr class='train-row' data-arr-min='974' data-dep-min='975' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/050311.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:14</span><span class='time-sub'>着</span> <span class='time-val'>16:15</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -1410,7 +1431,7 @@
             <td class='section-cell'>勝田－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='974' data-dep-min='9999' data-pf='１'>
+        <tr class='train-row' data-arr-min='974' data-dep-min='9999' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063391.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:14</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -1421,7 +1442,7 @@
             <td class='section-cell'>成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='975' data-pf='１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='975' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063591.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:15</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -1432,7 +1453,7 @@
             <td class='section-cell'>東京－甲府</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='976' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='976' data-pf='２０' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098321.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:16</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1443,7 +1464,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='976' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='976' data-dep-min='9999' data-pf='２２' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021871.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:16</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1454,7 +1475,7 @@
             <td class='section-cell'>仙台－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='980' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='980' data-pf='２３' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111181.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:20</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1465,7 +1486,7 @@
             <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='980' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='980' data-dep-min='9999' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130491.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:20</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1476,7 +1497,7 @@
             <td class='section-cell'>金沢－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='982' data-dep-min='983' data-pf='８'>
+        <tr class='train-row' data-arr-min='982' data-dep-min='983' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048361.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:22</span><span class='time-sub'>着</span> <span class='time-val'>16:23</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1487,7 +1508,7 @@
             <td class='section-cell'>品川－勝田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='984' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='984' data-pf='２１' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098541.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:24</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1498,7 +1519,7 @@
             <td class='section-cell'>東京－敦賀</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='984' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='984' data-dep-min='9999' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/014031.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:24</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1509,7 +1530,7 @@
             <td class='section-cell'>盛岡－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='988' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='988' data-dep-min='9999' data-pf='２１' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098381.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:28</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1520,7 +1541,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='990' data-dep-min='9999' data-pf='８'>
+        <tr class='train-row' data-arr-min='990' data-dep-min='9999' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/100/101071.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:30</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1531,7 +1552,7 @@
             <td class='section-cell'>伊豆急下田－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='990' data-dep-min='9999' data-pf='８'>
+        <tr class='train-row' data-arr-min='990' data-dep-min='9999' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/100/101061.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:30</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1542,7 +1563,7 @@
             <td class='section-cell'>伊豆急下田－東京、修善寺－熱海－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='991' data-dep-min='9999' data-pf='４'>
+        <tr class='train-row' data-arr-min='991' data-dep-min='9999' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/075/076581.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:31</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -1553,7 +1574,7 @@
             <td class='section-cell'>新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='992' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='992' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038611.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:32</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1564,7 +1585,7 @@
             <td class='section-cell'>東京－金沢</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='992' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='992' data-dep-min='9999' data-pf='２２' data-train-model='E5系/H5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111331.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:32</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1575,7 +1596,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='996' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='996' data-pf='２３' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033741.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:36</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1586,7 +1607,7 @@
             <td class='section-cell'>東京－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1000' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1000' data-pf='２１' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/010491.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:40</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1597,7 +1618,7 @@
             <td class='section-cell'>東京－新潟</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1000' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='1000' data-dep-min='9999' data-pf='２３' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/040/043131.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:40</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1608,7 +1629,7 @@
             <td class='section-cell'>長野－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1003' data-dep-min='1004' data-pf='９'>
+        <tr class='train-row' data-arr-min='1003' data-dep-min='1004' data-pf='９' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/048551.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:43</span><span class='time-sub'>着</span> <span class='time-val'>16:44</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>９</span></a></td>
             <td class='name-cell'>
@@ -1619,7 +1640,7 @@
             <td class='section-cell'>いわき－品川</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111661.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1630,7 +1651,7 @@
             <td class='section-cell'>東京－新青森</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/125/128301.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1641,7 +1662,7 @@
             <td class='section-cell'>東京－盛岡</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1004' data-pf='２２' data-train-model='E5系・E6系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/047171.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:44</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1652,7 +1673,7 @@
             <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1004' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='1004' data-dep-min='9999' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131571.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1663,7 +1684,7 @@
             <td class='section-cell'>仙台－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1004' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='1004' data-dep-min='9999' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111771.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:44</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1674,7 +1695,7 @@
             <td class='section-cell'>新青森－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1005' data-pf='１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1005' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/063901.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:45</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -1685,7 +1706,7 @@
             <td class='section-cell'>東京－松本</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1005' data-dep-min='1007' data-pf='１'>
+        <tr class='train-row' data-arr-min='1005' data-dep-min='1007' data-pf='１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031471.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:45</span><span class='time-sub'>着</span> <span class='time-val'>16:47</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>１</span></a></td>
             <td class='name-cell'>
@@ -1696,7 +1717,7 @@
             <td class='section-cell'>成田空港－大船、成田空港－東京－新宿</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1008' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1008' data-pf='２０' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/015/017561.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1707,7 +1728,7 @@
             <td class='section-cell'>東京－仙台、東京－福島－新庄</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1008' data-pf='２０'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1008' data-pf='２０' data-train-model='E3系/E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/025/025631.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:48</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1718,7 +1739,7 @@
             <td class='section-cell'>東京－福島－新庄</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1008' data-dep-min='9999' data-pf='２２'>
+        <tr class='train-row' data-arr-min='1008' data-dep-min='9999' data-pf='２２' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030221.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:48</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1729,7 +1750,7 @@
             <td class='section-cell'>仙台－東京、新庄－福島－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1009' data-dep-min='9999' data-pf='８'>
+        <tr class='train-row' data-arr-min='1009' data-dep-min='9999' data-pf='８' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/010061.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:49</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>８</span></a></td>
             <td class='name-cell'>
@@ -1740,7 +1761,7 @@
             <td class='section-cell'>伊豆急下田－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1012' data-pf='２３'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1012' data-pf='２３' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/038731.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:52</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1751,7 +1772,7 @@
             <td class='section-cell'>東京－長野</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1012' data-dep-min='1013' data-pf='７'>
+        <tr class='train-row' data-arr-min='1012' data-dep-min='1013' data-pf='７' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098801.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:52</span><span class='time-sub'>着</span> <span class='time-val'>16:53</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>７</span></a></td>
             <td class='name-cell'>
@@ -1762,7 +1783,7 @@
             <td class='section-cell'>品川－仙台</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1012' data-dep-min='9999' data-pf='２０'>
+        <tr class='train-row' data-arr-min='1012' data-dep-min='9999' data-pf='２０' data-train-model='E7系/W7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098751.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:52</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２０</span></a></td>
             <td class='name-cell'>
@@ -1773,7 +1794,7 @@
             <td class='section-cell'>敦賀－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1016' data-pf='２１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1016' data-pf='２１' data-train-model='E5系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098221.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:56</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1784,7 +1805,7 @@
             <td class='section-cell'>東京－盛岡</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1016' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='1016' data-dep-min='9999' data-pf='２３' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087551.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:56</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1795,7 +1816,7 @@
             <td class='section-cell'>新潟－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1016' data-dep-min='9999' data-pf='２３'>
+        <tr class='train-row' data-arr-min='1016' data-dep-min='9999' data-pf='２３' data-train-model='E7系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/039211.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:56</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２３</span></a></td>
             <td class='name-cell'>
@@ -1806,7 +1827,7 @@
             <td class='section-cell'>ガーラ湯沢－東京</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1016' data-dep-min='1023' data-pf='４'>
+        <tr class='train-row' data-arr-min='1016' data-dep-min='1023' data-pf='４' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/031181.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>16:56</span><span class='time-sub'>着</span> <span class='time-val'>17:03</span><span class='time-sub'>発</span></a></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>４</span></a></td>
             <td class='name-cell'>
@@ -1817,7 +1838,7 @@
             <td class='section-cell'>大船－成田空港、新宿－東京－成田空港</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='２２'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='２２' data-train-model='E5系・E8系'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033761.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>17:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２２</span></a></td>
             <td class='name-cell'>
@@ -1828,7 +1849,7 @@
             <td class='section-cell'>東京－仙台、東京－福島－山形</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='京１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='京１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/100/102631.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>17:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>京１</span></a></td>
             <td class='name-cell'>
@@ -1839,7 +1860,7 @@
             <td class='section-cell'>東京－勝浦</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='京１'>
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1020' data-pf='京１' data-train-model='特急'>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098871.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>17:00</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div> <span class='diamond'>◆</span></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>京１</span></a></td>
             <td class='name-cell'>
@@ -1850,7 +1871,7 @@
             <td class='section-cell'>東京－上総一ノ宮</td>
         </tr>
     
-        <tr class='train-row' data-arr-min='1020' data-dep-min='9999' data-pf='２１'>
+        <tr class='train-row' data-arr-min='1020' data-dep-min='9999' data-pf='２１' data-train-model=''>
             <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098391.html' class='time-link' target='_blank'><span class='date-label'>3/29(日)</span><br><span class='time-val'>17:00</span><span class='time-sub'>着</span></a><div class='time-icons'><span class='icon-dest' title='当駅止まり'>終</span></div></div></td>
             <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1039.html' class='pf-link' target='_blank'><span class='pf-badge'>２１</span></a></td>
             <td class='name-cell'>
@@ -1864,7 +1885,7 @@
                     </tbody>
                 </table>
             </div>
-                <!-- フィルターポップアップをスクロールエリアの外に配置 -->
+                <!-- 番線フィルターポップアップ -->
                 <div class="filter-popup" id="pfFilterPopup">
                     <span class="filter-close-btn" id="pfCloseBtn">&times;</span>
                     <div id="pfOptions">
@@ -1873,6 +1894,17 @@
                     <div class="filter-actions">
                         <button id="pfAll">すべて</button>
                         <button id="pfNone">解除</button>
+                    </div>
+                </div>
+                <!-- 車両フィルターポップアップ -->
+                <div class="filter-popup" id="modelFilterPopup">
+                    <span class="filter-close-btn" id="modelCloseBtn">&times;</span>
+                    <div id="modelOptions">
+                        
+                    </div>
+                    <div class="filter-actions">
+                        <button id="modelAll">すべて</button>
+                        <button id="modelNone">解除</button>
                     </div>
                 </div>
             </div>
@@ -1973,15 +2005,24 @@
             const pfOptions = document.getElementById('pfOptions');
             const pfAll = document.getElementById('pfAll');
             const pfNone = document.getElementById('pfNone');
+            const modelFilterBtn = document.getElementById('modelFilterBtn');
+            const modelFilterPopup = document.getElementById('modelFilterPopup');
+            const modelCloseBtn = document.getElementById('modelCloseBtn');
+            const modelOptions = document.getElementById('modelOptions');
+            const modelAll = document.getElementById('modelAll');
+            const modelNone = document.getElementById('modelNone');
             const trainRows = document.querySelectorAll('.train-row');
 
             const STORAGE_KEY_TIME = 'timetable_req1_timeFilter';
             const STORAGE_KEY_PF = 'timetable_req1_pfFilter';
+            const STORAGE_KEY_MODEL = 'timetable_req1_modelFilter';
 
             function saveSettings() {
                 localStorage.setItem(STORAGE_KEY_TIME, timeFilter.checked ? '1' : '0');
                 const checkedPfs = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
                 localStorage.setItem(STORAGE_KEY_PF, JSON.stringify(checkedPfs));
+                const checkedModels = Array.from(modelOptions.querySelectorAll('input:checked')).map(i => i.value);
+                localStorage.setItem(STORAGE_KEY_MODEL, JSON.stringify(checkedModels));
             }
 
             function loadSettings() {
@@ -1997,9 +2038,17 @@
                         pfOptions.querySelectorAll('input').forEach(input => {
                             input.checked = checkedPfs.includes(input.value);
                         });
-                    } catch (e) {
-                        console.error('Failed to load PF settings', e);
-                    }
+                    } catch (e) {}
+                }
+
+                const savedModel = localStorage.getItem(STORAGE_KEY_MODEL);
+                if (savedModel !== null) {
+                    try {
+                        const checkedModels = JSON.parse(savedModel);
+                        modelOptions.querySelectorAll('input').forEach(input => {
+                            input.checked = checkedModels.includes(input.value);
+                        });
+                    } catch (e) {}
                 }
             }
 
@@ -2009,11 +2058,13 @@
                 const isTimeFilterActive = timeFilter.checked;
                 
                 const activePlatforms = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
+                const activeModels = Array.from(modelOptions.querySelectorAll('input:checked')).map(i => i.value);
 
                 trainRows.forEach(row => {
                     const arrMin = parseInt(row.dataset.arrMin);
                     const depMin = parseInt(row.dataset.depMin);
                     const pf = row.dataset.pf;
+                    const model = row.dataset.trainModel;
                     
                     let timeOk = true;
                     if (isTimeFilterActive) {
@@ -2024,8 +2075,9 @@
                     }
 
                     let pfOk = activePlatforms.includes(pf) || pf === "";
+                    let modelOk = activeModels.includes(model) || model === "";
 
-                    if (timeOk && pfOk) {
+                    if (timeOk && pfOk && modelOk) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
@@ -2041,16 +2093,29 @@
             pfFilterBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 pfFilterPopup.classList.toggle('active');
+                modelFilterPopup.classList.remove('active');
+            });
+
+            modelFilterBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                modelFilterPopup.classList.toggle('active');
+                pfFilterPopup.classList.remove('active');
             });
 
             document.addEventListener('click', (e) => {
-                if (!pfFilterPopup.contains(e.target) && e.target !== pfFilterBtn) {
+                if (!pfFilterPopup.contains(e.target) && e.target !== pfFilterBtn &&
+                    !modelFilterPopup.contains(e.target) && e.target !== modelFilterBtn) {
                     pfFilterPopup.classList.remove('active');
+                    modelFilterPopup.classList.remove('active');
                 }
             });
 
             pfCloseBtn.addEventListener('click', () => {
                 pfFilterPopup.classList.remove('active');
+            });
+
+            modelCloseBtn.addEventListener('click', () => {
+                modelFilterPopup.classList.remove('active');
             });
 
             pfAll.addEventListener('click', () => {
@@ -2060,6 +2125,16 @@
 
             pfNone.addEventListener('click', () => {
                 pfOptions.querySelectorAll('input').forEach(i => i.checked = false);
+                applyFilters();
+            });
+
+            modelAll.addEventListener('click', () => {
+                modelOptions.querySelectorAll('input').forEach(i => i.checked = true);
+                applyFilters();
+            });
+
+            modelNone.addEventListener('click', () => {
+                modelOptions.querySelectorAll('input').forEach(i => i.checked = false);
                 applyFilters();
             });
 
