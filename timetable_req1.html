@@ -199,19 +199,20 @@
             display: none;
             position: absolute;
             top: 100%;
-            left: 0;
+            right: 0;
             z-index: 100;
             background: white;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border-radius: 8px;
             padding: 12px;
-            min-width: 300px;
+            min-width: 260px;
+            max-width: calc(100vw - 40px);
         }
         .filter-popup.active { display: block; }
         .filter-option { 
             display: flex; 
-            align-items: center; 
+            align-items: flex-start; 
             gap: 8px; 
             padding: 8px 0; 
             cursor: pointer; 
@@ -221,9 +222,10 @@
             color: var(--text-main); 
             font-weight: normal; 
             border-bottom: 1px solid #f0f0f0; 
-            white-space: nowrap;
+            white-space: normal;
             -webkit-text-size-adjust: 100%;
         }
+        .filter-option input { margin-top: 4px; flex-shrink: 0; }
         .filter-option strong {
             font-size: 1.1em;
             color: var(--primary-color);
