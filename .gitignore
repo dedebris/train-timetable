@@ -10,8 +10,11 @@
 # .gitignore 自体は管理対象に含める
 !.gitignore
 
-# 明示的にキャッシュフォルダ等を除外（念のため）
-scraper_cache/
+# キャッシュフォルダを無視（内部の HTML も含めて無視）
+/cache/
+/scraper_cache/
+
+# その他
 venv/
 .gemini/
 __pycache__/
