@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. 盛岡駅発着 新幹線・特急</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0073e6;
+            --shinkansen-color: #1a1a1a;
+            --limited-express-color: #e60012;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --border-color: #e0e6ed;
+            --hover-bg: #f0f7ff;
+        }
+        
+        /* ... (一部省略) ... */
+        body { 
+            font-family: 'Inter', 'Noto Sans JP', sans-serif; 
+            padding: 0; 
+            margin: 0;
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.6; 
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #b3304b 0%, #d63d5a 100%); /* E6系 茜色 */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            border-bottom: 3px solid #f5f5f5; /* 飛雲ホワイトイメージ */
+        }
+        
+        .header h1 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+        .header p { margin: 1px 0 0 0; opacity: 0.9; font-size: 0.8rem; font-weight: 400; }
+        
+        .filters {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .filter-item { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main); cursor: pointer; }
+        .filter-item input { width: 18px; height: 18px; cursor: pointer; }
+
+        h2 { 
+            font-size: 1.5rem; 
+            margin: 40px 0 20px 0; 
+            display: flex; 
+            align-items: center; 
+        }
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background-color: var(--primary-color);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: visible; /* ポップアップ表示のため */
+            border: 1px solid var(--border-color);
+        }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            background-color: #f8f9fa; 
+            color: var(--text-sub); 
+            font-weight: 600; 
+            text-align: left; 
+            padding: 16px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        td { padding: 16px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .train-row:hover { background-color: var(--hover-bg); transition: background 0.2s; }
+        
+        .time-cell { min-width: 160px; }
+        .date-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
+        .time-val { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); }
+        .time-sub { font-size: 0.8rem; color: var(--text-sub); margin-left: 2px; margin-right: 8px; }
+        
+        .icon-origin, .icon-dest {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .icon-origin { background: #e6fffa; color: #2c7a7b; border: 1px solid #81e6d9; }
+        .icon-dest { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+        
+        .time-link { text-decoration: none; color: inherit; display: inline-block; }
+        .time-link:hover .time-val { color: #0056b3; text-decoration: underline; }
+        .time-link-container { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+        .time-icons { display: inline-flex; gap: 2px; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .badge-shinkansen { background: #eef2f7; color: var(--shinkansen-color); border: 1px solid #d1d9e6; }
+        .badge-limited-express { background: #fff1f0; color: var(--limited-express-color); border: 1px solid #ffa39e; }
+        .badge-default { background: #f5f5f5; color: #555; border: 1px solid #ddd; }
+        
+        .train-name-link { text-decoration: none; display: inline-block; transition: opacity 0.2s; }
+        .train-name-link:hover { opacity: 0.8; }
+        
+        .model-tag {
+            font-size: 0.75rem;
+            color: #fff;
+            background: #4a5568;
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 4px;
+            transition: background 0.2s;
+        }
+        .model-tag:hover { background: #2d3748; }
+        
+        .pf-cell { white-space: nowrap; min-width: 80px; }
+        .pf-badge {
+            background: #edf2f7;
+            color: #2d3748;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        .pf-link { text-decoration: none; display: inline-block; }
+        .pf-link:hover .pf-badge { background: #e2e8f0; color: var(--primary-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* 番線フィルターポップアップ */
+        .pf-filter-btn {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-left: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            color: #aaa;
+        }
+        .pf-filter-btn:hover { background: #e2e8f0; color: var(--primary-color); }
+        
+        .filter-popup {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 100;
+            background: white;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            padding: 12px;
+            min-width: 300px;
+        }
+        .filter-popup.active { display: block; }
+        .filter-option { display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; text-transform: none; letter-spacing: normal; font-size: 0.85rem; color: var(--text-main); font-weight: normal; border-bottom: 1px solid #f9f9f9; white-space: nowrap; }
+        .filter-option:last-child { border-bottom: none; }
+        .filter-option input { margin: 0; flex-shrink: 0; }
+        .filter-actions { border-top: 1px solid #eee; margin-top: 8px; padding-top: 8px; display: flex; justify-content: space-between; gap: 8px; }
+        .filter-actions button { font-size: 0.75rem; padding: 4px 8px; cursor: pointer; border: 1px solid #ddd; background: #f8f9fa; border-radius: 4px; }
+        .filter-actions button:hover { background: #e2e8f0; }
+
+        .op-ok { color: #38a169; font-size: 1.2rem; }
+        .op-ng { color: #e53e3e; font-size: 1.2rem; }
+        
+        .route-link { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .route-link:hover { text-decoration: underline; }
+        
+        .noriba-list { list-style: none; padding: 0; margin: 0; }
+        .noriba-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 20px; 
+            border-bottom: 1px solid var(--border-color); 
+        }
+        .noriba-item:last-child { border-bottom: none; }
+        .noriba-pf {
+            min-width: 48px;
+            height: 48px;
+            padding: 0 12px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        .pf-link:hover .noriba-pf { background: #0056b3; transform: scale(1.05); }
+
+        .noriba-route { font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 6px; }
+        .noriba-link {
+            color: var(--primary-color);
+            background: #eef6ff;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            th:nth-child(4), td:nth-child(4),
+            th:nth-child(5), td:nth-child(5) { display: none; }
+            .time-cell { min-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>3. 盛岡駅発着 新幹線・特急</h1>
+            <p>3/31(火) 14:00〜4/1(水) 14:00</p>
+        </header>
+
+        <div class="filters">
+            <label class="filter-item">
+                <input type="checkbox" id="timeFilter">
+                <span>現在時刻より10分以上前を隠す</span>
+            </label>
+        </div>
+        
+        <section>
+            <h2>新幹線・特急列車</h2>
+            <div class="card">
+                <table id="trainTable">
+                    <thead>
+                        <tr>
+                            <th>時刻</th>
+                            <th>
+                                <span>番線</span>
+                                <span class="pf-filter-btn" id="pfFilterBtn">▼</span>
+                                <div class="filter-popup" id="pfFilterPopup">
+                                    <div id="pfOptions">
+                                        <label class='filter-option'><input type='checkbox' value='１１' checked> <strong>１１</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１２' checked> <strong>１２</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１３' checked> <strong>１３</strong> 東北新幹線（上り）</label><label class='filter-option'><input type='checkbox' value='１４' checked> <strong>１４</strong> 北海道新幹線（下り）、東北、秋田新幹線（下り）</label>
+                                    </div>
+                                    <div class="filter-actions">
+                                        <button id="pfAll">すべて</button>
+                                        <button id="pfNone">解除</button>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>列車名 / 車両</th>
+                            <th>路線</th>
+                            <th>区間</th>
+                            <th>運行</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+        <tr class='train-row' data-arr-min='842' data-dep-min='843' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111611.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:02</span><span class='time-sub'>着</span> <span class='time-val'>14:03</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 75号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='848' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021901.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 60号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='850' data-dep-min='857' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111331.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:10</span><span class='time-sub'>着</span> <span class='time-val'>14:17</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 22号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='851' data-dep-min='855' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130242.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:11</span><span class='time-sub'>着</span> <span class='time-val'>14:15</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 21号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='851' data-dep-min='855' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130241.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:11</span><span class='time-sub'>着</span> <span class='time-val'>14:15</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 21号・こまち 21号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='868' data-dep-min='869' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111771.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:28</span><span class='time-sub'>着</span> <span class='time-val'>14:29</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 82号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='872' data-dep-min='877' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/010072.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:32</span><span class='time-sub'>着</span> <span class='time-val'>14:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 23号・こまち 23号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='884' data-dep-min='890' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033831.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:44</span><span class='time-sub'>着</span> <span class='time-val'>14:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 24号・こまち 24号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='898' data-dep-min='902' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/055/059001.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:58</span><span class='time-sub'>着</span> <span class='time-val'>15:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 59号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='898' data-dep-min='902' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/050131.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>14:58</span><span class='time-sub'>着</span> <span class='time-val'>15:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 59号・こまち 59号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='908' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062631.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 62号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='911' data-dep-min='917' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/051781.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:11</span><span class='time-sub'>着</span> <span class='time-val'>15:17</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 26号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='932' data-dep-min='937' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/010081.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:32</span><span class='time-sub'>着</span> <span class='time-val'>15:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 25号・こまち 25号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='933' data-dep-min='939' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111781.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:33</span><span class='time-sub'>着</span> <span class='time-val'>15:39</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 86号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='944' data-dep-min='950' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/010091.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:44</span><span class='time-sub'>着</span> <span class='time-val'>15:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 28号・こまち 28号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='958' data-dep-min='962' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087351.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:58</span><span class='time-sub'>着</span> <span class='time-val'>16:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 61号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='958' data-dep-min='962' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/064591.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>15:58</span><span class='time-sub'>着</span> <span class='time-val'>16:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 61号・こまち 61号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='963' data-dep-min='964' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131551.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:03</span><span class='time-sub'>着</span> <span class='time-val'>16:04</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 360号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='968' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062601.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 64号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='971' data-dep-min='977' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/047251.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:11</span><span class='time-sub'>着</span> <span class='time-val'>16:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 60号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='988' data-dep-min='989' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130231.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:28</span><span class='time-sub'>着</span> <span class='time-val'>16:29</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 30号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='993' data-dep-min='997' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130271.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:33</span><span class='time-sub'>着</span> <span class='time-val'>16:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 27号・こまち 27号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1004' data-dep-min='1010' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021992.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:44</span><span class='time-sub'>着</span> <span class='time-val'>16:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 32号・こまち 32号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1006' data-dep-min='1012' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111641.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:46</span><span class='time-sub'>着</span> <span class='time-val'>16:52</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 81号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1018' data-dep-min='1022' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130221.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:58</span><span class='time-sub'>着</span> <span class='time-val'>17:02</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 29号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1018' data-dep-min='1022' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130222.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>16:58</span><span class='time-sub'>着</span> <span class='time-val'>17:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 29号・こまち 29号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1027' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/052121.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:07</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 110号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1030' data-dep-min='1036' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111801.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:10</span><span class='time-sub'>着</span> <span class='time-val'>17:16</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 62号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1030' data-dep-min='1036' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111401.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:10</span><span class='time-sub'>着</span> <span class='time-val'>17:16</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 62号・こまち 62号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1052' data-dep-min='1057' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130281.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:32</span><span class='time-sub'>着</span> <span class='time-val'>17:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 31号・こまち 31号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1064' data-dep-min='1070' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/051761.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:44</span><span class='time-sub'>着</span> <span class='time-val'>17:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 34号・こまち 34号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1066' data-dep-min='1073' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111651.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:46</span><span class='time-sub'>着</span> <span class='time-val'>17:53</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 85号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1074' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062591.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:54</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 66号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1078' data-dep-min='1082' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131041.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>17:58</span><span class='time-sub'>着</span> <span class='time-val'>18:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 45号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1090' data-dep-min='1096' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111211.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:10</span><span class='time-sub'>着</span> <span class='time-val'>18:16</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 36号・こまち 36号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1091' data-dep-min='1094' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/125/128471.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:11</span><span class='time-sub'>着</span> <span class='time-val'>18:14</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 87号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1113' data-dep-min='1117' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111181.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:33</span><span class='time-sub'>着</span> <span class='time-val'>18:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 33号・こまち 33号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1115' data-dep-min='1116' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111811.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:35</span><span class='time-sub'>着</span> <span class='time-val'>18:36</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 394号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1121' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062581.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:41</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 68号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1125' data-dep-min='1130' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130301.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:45</span><span class='time-sub'>着</span> <span class='time-val'>18:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 38号・こまち 38号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1126' data-dep-min='1129' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111361.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:46</span><span class='time-sub'>着</span> <span class='time-val'>18:49</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 89号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1138' data-dep-min='1142' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111661.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>18:58</span><span class='time-sub'>着</span> <span class='time-val'>19:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 63号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1153' data-dep-min='1154' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130211.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:13</span><span class='time-sub'>着</span> <span class='time-val'>19:14</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 40号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1168' data-dep-min='1174' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/065/067841.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:28</span><span class='time-sub'>着</span> <span class='time-val'>19:34</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 64号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1168' data-dep-min='1174' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/045/047201.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:28</span><span class='time-sub'>着</span> <span class='time-val'>19:34</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 64号・こまち 64号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1173' data-dep-min='1177' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030471.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:33</span><span class='time-sub'>着</span> <span class='time-val'>19:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 35号・こまち 35号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1180' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062571.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:40</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 70号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1184' data-dep-min='1190' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/051771.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:44</span><span class='time-sub'>着</span> <span class='time-val'>19:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 42号・こまち 42号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1197' data-dep-min='1202' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/085/087231.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:57</span><span class='time-sub'>着</span> <span class='time-val'>20:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 65号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1197' data-dep-min='1202' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111372.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>19:57</span><span class='time-sub'>着</span> <span class='time-val'>20:02</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 65号・こまち 65号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1214' data-dep-min='1222' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/035/035071.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>20:14</span><span class='time-sub'>着</span> <span class='time-val'>20:22</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 66号・こまち 66号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1214' data-dep-min='1222' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098081.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>20:14</span><span class='time-sub'>着</span> <span class='time-val'>20:22</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 66号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='1229' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130251.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>20:29</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 72号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e2.html' class='model-tag' target='_blank' style='background: #ffffff; color: #ff69b4; border: 1px solid #ff69b4;'>E2系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1233' data-dep-min='1237' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111191.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>20:33</span><span class='time-sub'>着</span> <span class='time-val'>20:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 37号・こまち 37号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1245' data-dep-min='1250' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/130291.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>20:45</span><span class='time-sub'>着</span> <span class='time-val'>20:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 44号・こまち 44号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1293' data-dep-min='1298' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/051751.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>21:33</span><span class='time-sub'>着</span> <span class='time-val'>21:38</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 39号・こまち 39号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1305' data-dep-min='1311' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030481.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>21:45</span><span class='time-sub'>着</span> <span class='time-val'>21:51</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 96号・こまち 96号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－仙台、秋田－盛岡－仙台</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='1347' data-dep-min='1351' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062311.html' class='time-link' target='_blank'><span class='date-label'>3/31(火)</span><br><span class='time-val'>22:27</span><span class='time-sub'>着</span> <span class='time-val'>22:31</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 41号・こまち 41号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='370' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030511.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>06:10</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 102号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='391' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/025/025831.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>06:31</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 94号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e2.html' class='model-tag' target='_blank' style='background: #ffffff; color: #ff69b4; border: 1px solid #ff69b4;'>E2系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－仙台</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='414' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/040/044921.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>06:54</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-default'>はやて 93号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>盛岡－新函館北斗</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='421' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033721.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:01</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 50号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='430' data-dep-min='431' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/030491.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:10</span><span class='time-sub'>着</span> <span class='time-val'>07:11</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 4号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='448' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098241.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:28</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 104号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='457' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/032982.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:37</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 6号・こまち 6号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='469' data-dep-min='479' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/020/021931.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:49</span><span class='time-sub'>着</span> <span class='time-val'>07:59</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 95号・こまち 95号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>仙台－新函館北斗、仙台－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='474' data-dep-min='482' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033781.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>07:54</span><span class='time-sub'>着</span> <span class='time-val'>08:02</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 8号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='491' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098251.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>08:11</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 106号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='493' data-dep-min='497' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/097961.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>08:13</span><span class='time-sub'>着</span> <span class='time-val'>08:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 49号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='523' data-dep-min='530' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033621.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>08:43</span><span class='time-sub'>着</span> <span class='time-val'>08:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 10号・こまち 10号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='524' data-dep-min='530' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033791.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>08:44</span><span class='time-sub'>着</span> <span class='time-val'>08:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 1号・こまち 1号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='546' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/040/044951.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:06</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 108号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='550' data-dep-min='554' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/064581.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:10</span><span class='time-sub'>着</span> <span class='time-val'>09:14</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 51号・こまち 51号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='561' data-dep-min='566' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/060/062181.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:21</span><span class='time-sub'>着</span> <span class='time-val'>09:26</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 50号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='564' data-dep-min='565' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111341.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:24</span><span class='time-sub'>着</span> <span class='time-val'>09:25</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 53号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='581' data-dep-min='590' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111133.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:41</span><span class='time-sub'>着</span> <span class='time-val'>09:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 12号・こまち 12号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='584' data-dep-min='588' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111141.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>09:44</span><span class='time-sub'>着</span> <span class='time-val'>09:48</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 3号・こまち 3号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='608' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013241.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 52号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='611' data-dep-min='617' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/055/059011.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:11</span><span class='time-sub'>着</span> <span class='time-val'>10:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 52号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='611' data-dep-min='617' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111391.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:11</span><span class='time-sub'>着</span> <span class='time-val'>10:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 52号・こまち 52号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='628' data-dep-min='629' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111091.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:28</span><span class='time-sub'>着</span> <span class='time-val'>10:29</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 5号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='645' data-dep-min='651' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/032992.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:45</span><span class='time-sub'>着</span> <span class='time-val'>10:51</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 14号・こまち 14号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='655' data-dep-min='659' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111151.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>10:55</span><span class='time-sub'>着</span> <span class='time-val'>10:59</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 7号・こまち 7号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='662' data-dep-min='663' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/130/131141.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:02</span><span class='time-sub'>着</span> <span class='time-val'>11:03</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 354号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='668' data-dep-min='669' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111351.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:08</span><span class='time-sub'>着</span> <span class='time-val'>11:09</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 71号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='668' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013612.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 54号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='671' data-dep-min='677' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/050/054511.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:11</span><span class='time-sub'>着</span> <span class='time-val'>11:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 54号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='680' data-dep-min='686' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/095/098301.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:20</span><span class='time-sub'>着</span> <span class='time-val'>11:26</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 9号・こまち 9号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='703' data-dep-min='710' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033634.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:43</span><span class='time-sub'>着</span> <span class='time-val'>11:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 16号・こまち 16号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='706' data-dep-min='707' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111101.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>11:46</span><span class='time-sub'>着</span> <span class='time-val'>11:47</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 11号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='728' data-pf='１２'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/013861.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１２</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 56号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='731' data-dep-min='737' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111731.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:11</span><span class='time-sub'>着</span> <span class='time-val'>12:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 56号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='731' data-dep-min='737' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111741.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:11</span><span class='time-sub'>着</span> <span class='time-val'>12:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 56号・こまち 56号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='740' data-dep-min='744' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111581.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:20</span><span class='time-sub'>着</span> <span class='time-val'>12:24</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 13号・こまち 13号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='752' data-dep-min='757' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111161.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:32</span><span class='time-sub'>着</span> <span class='time-val'>12:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 15号・こまち 15号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='765' data-dep-min='770' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/030/033822.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:45</span><span class='time-sub'>着</span> <span class='time-val'>12:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 18号・こまち 18号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新函館北斗－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='766' data-dep-min='769' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111911.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>12:46</span><span class='time-sub'>着</span> <span class='time-val'>12:49</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 73号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='781' data-dep-min='785' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111111.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>13:01</span><span class='time-sub'>着</span> <span class='time-val'>13:05</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 17号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>／<a href='https://www.jrhokkaido.co.jp/train/shinkansen.html' class='model-tag' target='_blank' style='background: #007b43; color: #800080;'>H5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新函館北斗</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='9999' data-dep-min='788' data-pf='１３'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/010/014031.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>13:08</span><span class='time-sub'>発</span></a><div class='time-icons'><span class='icon-origin' title='当駅始発'>始</span></div></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１３</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>やまびこ 58号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='791' data-dep-min='797' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111751.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>13:11</span><span class='time-sub'>着</span> <span class='time-val'>13:17</span><span class='time-sub'>発</span></a> <span class='diamond'>◆</span></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 58号</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京</td>
+            <td class='op-cell'><span class='op-ng'>X</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='812' data-dep-min='817' data-pf='１４'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111171.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>13:32</span><span class='time-sub'>着</span> <span class='time-val'>13:37</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１４</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 19号・こまち 19号 分割</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565010.html' class='route-link' target='_blank'>東北・北海道新幹線（下り）</a> ・ <a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565030.html' class='route-link' target='_blank'>秋田新幹線（下り）</a></td>
+            <td class='section-cell'>東京－新青森、東京－盛岡－秋田</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+        <tr class='train-row' data-arr-min='824' data-dep-min='830' data-pf='１１'>
+            <td class='time-cell'><div class='time-link-container'><a href='https://timetables.jreast.co.jp/2603/train/110/111201.html' class='time-link' target='_blank'><span class='date-label'>4/1(水)</span><br><span class='time-val'>13:44</span><span class='time-sub'>着</span> <span class='time-val'>13:50</span><span class='time-sub'>発</span></a></div></td>
+            <td class='pf-cell'><a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='pf-badge'>１１</span></a></td>
+            <td class='name-cell'>
+                <span class='badge badge-shinkansen'>はやぶさ 20号・こまち 20号 併結</span>
+                <a href='https://www.jreast.co.jp/train/shinkan/e5.html' class='model-tag' target='_blank' style='background: #007b43; color: #ff69b4;'>E5系</a>・<a href='https://www.jreast.co.jp/train/shinkan/e6.html' class='model-tag' target='_blank' style='background: #b3304b; color: #ffffff;'>E6系</a>
+            </td>
+            <td class='route-cell'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565020.html' class='route-link' target='_blank'>東北新幹線（上り）</a></td>
+            <td class='section-cell'>新青森－東京、秋田－盛岡－東京</td>
+            <td class='op-cell'><span class='op-ok'>◯</span></td>
+        </tr>
+    
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    
+        <section>
+            <h2>普通・快速電車等（のりば案内）</h2>
+            <div class="card">
+                <ul class="noriba-list">
+        
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>0・1番線</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>ＩＧＲいわて銀河鉄道線</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565080.html' class='noriba-link' target='_blank'>下り時刻表</a></div>
+            </div>
+        </li>
+    
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>０</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>花輪線（ＩＧＲいわて銀河鉄道経由）</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565060.html' class='noriba-link' target='_blank'>ＩＧＲいわて銀河鉄道経由時刻表</a></div>
+            </div>
+        </li>
+    
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>３</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>花輪線（ＩＧＲいわて銀河鉄道経由）</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565060.html' class='noriba-link' target='_blank'>ＩＧＲいわて銀河鉄道経由時刻表</a></div>
+            </div>
+        </li>
+    
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>4・6番線</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>山田線</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565050.html' class='noriba-link' target='_blank'>下り時刻表</a></div>
+            </div>
+        </li>
+    
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>5-7番線</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>東北本線</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565040.html' class='noriba-link' target='_blank'>上り時刻表</a></div>
+            </div>
+        </li>
+    
+        <li class='noriba-item'>
+            <a href='https://www.jreast.co.jp/estation/stations/1565.html' class='pf-link' target='_blank'><span class='noriba-pf'>8・9番線</span></a>
+            <div class='noriba-info'>
+                <span class='noriba-route'>田沢湖線</span>
+                <div class='noriba-links'><a href='https://timetables.jreast.co.jp/2603/timetable/tt1565/1565090.html' class='noriba-link' target='_blank'>下り時刻表</a></div>
+            </div>
+        </li>
+    
+                </ul>
+            </div>
+        </section>
+        
+    </div>
+    <footer style="text-align: center; padding: 40px; color: #999; font-size: 0.8rem;">
+        &copy; 2026 Train Timetable Generator
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeFilter = document.getElementById('timeFilter');
+            const pfFilterBtn = document.getElementById('pfFilterBtn');
+            const pfFilterPopup = document.getElementById('pfFilterPopup');
+            const pfOptions = document.getElementById('pfOptions');
+            const pfAll = document.getElementById('pfAll');
+            const pfNone = document.getElementById('pfNone');
+            const trainRows = document.querySelectorAll('.train-row');
+
+            const STORAGE_KEY_TIME = 'timetable_req3_timeFilter';
+            const STORAGE_KEY_PF = 'timetable_req3_pfFilter';
+
+            function saveSettings() {
+                localStorage.setItem(STORAGE_KEY_TIME, timeFilter.checked ? '1' : '0');
+                const checkedPfs = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
+                localStorage.setItem(STORAGE_KEY_PF, JSON.stringify(checkedPfs));
+            }
+
+            function loadSettings() {
+                const savedTime = localStorage.getItem(STORAGE_KEY_TIME);
+                if (savedTime !== null) {
+                    timeFilter.checked = (savedTime === '1');
+                }
+
+                const savedPf = localStorage.getItem(STORAGE_KEY_PF);
+                if (savedPf !== null) {
+                    try {
+                        const checkedPfs = JSON.parse(savedPf);
+                        pfOptions.querySelectorAll('input').forEach(input => {
+                            input.checked = checkedPfs.includes(input.value);
+                        });
+                    } catch (e) {
+                        console.error('Failed to load PF settings', e);
+                    }
+                }
+            }
+
+            function applyFilters() {
+                const now = new Date();
+                const nowMin = now.getHours() * 60 + now.getMinutes();
+                const isTimeFilterActive = timeFilter.checked;
+                
+                const activePlatforms = Array.from(pfOptions.querySelectorAll('input:checked')).map(i => i.value);
+
+                trainRows.forEach(row => {
+                    const arrMin = parseInt(row.dataset.arrMin);
+                    const depMin = parseInt(row.dataset.depMin);
+                    const pf = row.dataset.pf;
+                    
+                    let timeOk = true;
+                    if (isTimeFilterActive) {
+                        const targetMin = Math.max(arrMin === 9999 ? -1 : arrMin, depMin === 9999 ? -1 : depMin);
+                        if (targetMin !== -1 && targetMin < nowMin - 10) {
+                            timeOk = false;
+                        }
+                    }
+
+                    let pfOk = activePlatforms.includes(pf) || pf === "";
+
+                    if (timeOk && pfOk) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                saveSettings();
+            }
+
+            timeFilter.addEventListener('change', applyFilters);
+            pfOptions.addEventListener('change', applyFilters);
+
+            pfFilterBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                pfFilterPopup.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!pfFilterPopup.contains(e.target) && e.target !== pfFilterBtn) {
+                    pfFilterPopup.classList.remove('active');
+                }
+            });
+
+            pfAll.addEventListener('click', () => {
+                pfOptions.querySelectorAll('input').forEach(i => i.checked = true);
+                applyFilters();
+            });
+
+            pfNone.addEventListener('click', () => {
+                pfOptions.querySelectorAll('input').forEach(i => i.checked = false);
+                applyFilters();
+            });
+
+            // 初期化
+            loadSettings();
+            applyFilters();
+        });
+    </script>
+</body>
+</html>

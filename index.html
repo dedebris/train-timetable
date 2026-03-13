@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>列車時刻表一覧</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0073e6;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --border-color: #e1e8ed;
+        }
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+        .card h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+        .card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>列車時刻表 一覧</h1>
+            <p>生成された時刻表HTMLファイルへのリンク集です</p>
+        </header>
+        
+        <div class="grid">
+            <a href="timetable_req1.html" class="card">
+                <h2>1. 東京駅 時刻表</h2>
+                <p>3/29(日) 14:00〜17:00<br>新幹線・特急 (東海道新幹線除く)</p>
+            </a>
+            
+            <a href="timetable_req2.html" class="card">
+                <h2>2. 大宮駅 時刻表</h2>
+                <p>3/29(日) 15:00 〜 3/31(火) 15:00<br>新幹線・特急</p>
+            </a>
+            
+            <a href="timetable_req3.html" class="card">
+                <h2>3. 盛岡駅 時刻表</h2>
+                <p>3/31(火) 14:00 〜 4/1(水) 14:00<br>新幹線・特急</p>
+            </a>
+            
+            <a href="timetable_req4.html" class="card">
+                <h2>4. 東京駅 時刻表</h2>
+                <p>4/1(水) 13:00 〜 16:00<br>新幹線・特急 (東海道新幹線除く)</p>
+            </a>
+        </div>
+        
+        <div class="footer">
+            &copy; 2026 Train Timetable Generator
+        </div>
+    </div>
+</body>
+</html>
