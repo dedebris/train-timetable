@@ -1788,15 +1788,11 @@
                     let modelOk = true;
                     if (modelInputs.length > 0) {
                         const rowModelStr = row.dataset.trainModel || "";
-                        if (rowModelStr) {
-                            const rowModels = rowModelStr.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
-                            if (rowModels.length > 0) {
-                                modelOk = rowModels.some(rm => activeModels.includes(rm));
-                            } else {
-                                modelOk = activeModels.includes("特急");
-                            }
+                        const rowModels = rowModelStr.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
+                        if (rowModels.length > 0) {
+                            modelOk = rowModels.some(rm => activeModels.includes(rm));
                         } else {
-                            modelOk = activeModels.includes("特急") || rowModelStr === "";
+                            modelOk = false;
                         }
                     }
 
