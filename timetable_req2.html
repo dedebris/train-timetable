@@ -10773,8 +10773,8 @@
             </label>
         
             <label class="filter-option">
-                <input type="checkbox" value="E3系/E8系" checked>
-                <span class="badge badge-shinkansen">E3系/E8系</span>
+                <input type="checkbox" value="E3系" checked>
+                <span class="badge badge-shinkansen">E3系</span>
             </label>
         
             <label class="filter-option">
@@ -10783,23 +10783,8 @@
             </label>
         
             <label class="filter-option">
-                <input type="checkbox" value="E5系/H5系" checked>
-                <span class="badge badge-shinkansen">E5系/H5系</span>
-            </label>
-        
-            <label class="filter-option">
-                <input type="checkbox" value="E5系/H5系・E6系" checked>
-                <span class="badge badge-shinkansen">E5系/H5系・E6系</span>
-            </label>
-        
-            <label class="filter-option">
-                <input type="checkbox" value="E5系・E6系" checked>
-                <span class="badge badge-shinkansen">E5系・E6系</span>
-            </label>
-        
-            <label class="filter-option">
-                <input type="checkbox" value="E5系・E8系" checked>
-                <span class="badge badge-shinkansen">E5系・E8系</span>
+                <input type="checkbox" value="E6系" checked>
+                <span class="badge badge-shinkansen">E6系</span>
             </label>
         
             <label class="filter-option">
@@ -10808,18 +10793,18 @@
             </label>
         
             <label class="filter-option">
-                <input type="checkbox" value="E7系/W7系" checked>
-                <span class="badge badge-shinkansen">E7系/W7系</span>
-            </label>
-        
-            <label class="filter-option">
                 <input type="checkbox" value="E8系" checked>
                 <span class="badge badge-shinkansen">E8系</span>
             </label>
         
             <label class="filter-option">
-                <input type="checkbox" value="E8系・E5系" checked>
-                <span class="badge badge-shinkansen">E8系・E5系</span>
+                <input type="checkbox" value="H5系" checked>
+                <span class="badge badge-shinkansen">H5系</span>
+            </label>
+        
+            <label class="filter-option">
+                <input type="checkbox" value="W7系" checked>
+                <span class="badge badge-shinkansen">W7系</span>
             </label>
         
             <label class="filter-option">
@@ -11001,7 +10986,18 @@
                     }
 
                     let pfOk = activePlatforms.includes(pf) || pf === "";
-                    let modelOk = activeModels.includes(model) || model === "";
+                    
+                    let modelOk = true;
+                    if (activeModels.length > 0) {
+                        // 行のモデル（連結対応）のいずれかが選択されていればOK
+                        const rowModels = model.split(/[・／/]/).map(s => s.trim()).filter(s => s !== "");
+                        if (rowModels.length > 0) {
+                            modelOk = rowModels.some(rm => activeModels.includes(rm));
+                        } else {
+                            // モデル情報がない列車（特急など）
+                            modelOk = activeModels.includes("特急") || model === "";
+                        }
+                    }
 
                     if (timeOk && pfOk && modelOk) {
                         row.style.display = '';
