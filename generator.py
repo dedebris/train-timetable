@@ -8,8 +8,21 @@ from bs4 import BeautifulSoup
 kks = pykakasi.kakasi()
 
 def to_hiragana(text):
+    import re
+    replacements = {
+        r'\(月\)': '(げつ)',
+        r'\(火\)': '(か)',
+        r'\(水\)': '(すい)',
+        r'\(木\)': '(もく)',
+        r'\(金\)': '(きん)',
+        r'\(土\)': '(ど)',
+        r'\(日\)': '(にち)'
+    }
+    for orig, kana in replacements.items():
+        text = re.sub(orig, kana, text)
+        
     result = kks.convert(text)
-    return "".join([item['hira'] for item in result])
+    return "".join([item['orig'] if item['hira'] == '' else item['hira'] for item in result])
 
 def apply_hiragana_markup(html_str):
     soup = BeautifulSoup(html_str, 'html.parser')
@@ -94,6 +107,7 @@ def get_model_style(p):
     return ""
 
 def render_train(t, station_map_url=""):
+    import re
     
     # ◆マークの付与
     diamond = "◆" if t.get('is_diamond') else ""
@@ -210,6 +224,12 @@ def render_train(t, station_map_url=""):
     arr_min = to_min(arr)
     dep_min = to_min(dep)
 
+    # 日付フィルタ用のデータ
+    import re
+    date_clean = re.sub(r'\(.*?\)', '', date_str) if date_str else ""
+    arr_raw = arr if arr != "-" and arr else ""
+    dep_raw = dep if dep != "-" and dep else ""
+
     # フィルタ用の車両種別
     filter_model = "その他"
     if badge_class == 'badge-shinkansen':
@@ -223,7 +243,7 @@ def render_train(t, station_map_url=""):
         pf_display = f"<a href='{station_map_url}' class='pf-link' target='_blank'>{pf_display}</a>"
 
     html = f"""
-        <tr class='train-row' data-arr-min='{arr_min}' data-dep-min='{dep_min}' data-pf='{pf}' data-train-model='{filter_model}'>
+        <tr class='train-row' data-arr-min='{arr_min}' data-dep-min='{dep_min}' data-pf='{pf}' data-train-model='{filter_model}' data-date='{date_clean}' data-arr-time-raw='{arr_raw}' data-dep-time-raw='{dep_raw}'>
             <td class='time-cell'>{time_html}</td>
             <td class='pf-cell'>{pf_display}</td>
             <td class='name-cell'>
@@ -946,11 +966,33 @@ def generate_html(req_name, title, description, train_list):
                     const pf = row.dataset.pf;
                     const model = row.dataset.trainModel;
                     
+                    const dateStr = row.dataset.date;
+                    const arrTimeStr = row.dataset.arrTimeRaw;
+                    const depTimeStr = row.dataset.depTimeRaw;
+                    
                     let timeOk = true;
                     if (isTimeFilterActive) {{
-                        const targetMin = Math.max(arrMin === 9999 ? -1 : arrMin, depMin === 9999 ? -1 : depMin);
-                        if (targetMin !== -1 && targetMin < nowMin - 10) {{
-                            timeOk = false;
+                        let rowTimeObj = null;
+                        
+                        // 日付のパース (例: '3/29' -> '2026/03/29')
+                        if (dateStr && (arrTimeStr || depTimeStr)) {{
+                            const year = now.getFullYear();
+                            // 優先して到着時刻、なければ出発時刻を使う (実際の対象時刻のより前の方で消すため)
+                            const timeStr = arrTimeStr || depTimeStr;
+                            rowTimeObj = new Date(`${{year}}/${{dateStr}} ${{timeStr}}`);
+                        }}
+                        
+                        if (rowTimeObj && !isNaN(rowTimeObj.getTime())) {{
+                            // 日付に基づく正確な比較 (ミリ秒)
+                            if (rowTimeObj.getTime() < now.getTime() - (10 * 60000)) {{
+                                timeOk = false;
+                            }}
+                        }} else {{
+                            // 従来通り（分単位）の比較 (日付データがない場合のフォールバック)
+                            const targetMin = Math.max(arrMin === 9999 ? -1 : arrMin, depMin === 9999 ? -1 : depMin);
+                            if (targetMin !== -1 && targetMin < nowMin - 10) {{
+                                timeOk = false;
+                            }}
                         }}
                     }}
 
