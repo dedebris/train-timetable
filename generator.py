@@ -762,12 +762,12 @@ def generate_html(req_name, title, description, train_list):
                 box-shadow: 0 10px 40px rgba(0,0,0,0.4);
                 border: 2px solid var(--primary-color);
             }}
-
-            /* ひらがなモード */
-            .text-kana {{ display: none; }}
-            body.hiragana-mode .text-original {{ display: none !important; }}
-            body.hiragana-mode .text-kana {{ display: inline !important; }}
         }}
+
+        /* ひらがなモード */
+        .text-kana {{ display: none; }}
+        body.hiragana-mode .text-original {{ display: none !important; }}
+        body.hiragana-mode .text-kana {{ display: inline !important; }}
     </style>
 </head>
 <body>
