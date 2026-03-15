@@ -2,6 +2,34 @@ import json
 import os
 import re
 import unicodedata
+import pykakasi
+from bs4 import BeautifulSoup
+
+kks = pykakasi.kakasi()
+
+def to_hiragana(text):
+    result = kks.convert(text)
+    return "".join([item['hira'] for item in result])
+
+def apply_hiragana_markup(html_str):
+    soup = BeautifulSoup(html_str, 'html.parser')
+    for text_node in soup.find_all(string=True):
+        if text_node.parent.name in ['script', 'style', 'title', 'option']:
+            continue
+        orig = str(text_node)
+        if not orig.strip(): continue
+        kana = to_hiragana(orig)
+        if kana != orig:
+            new_tag = soup.new_tag("span")
+            span_orig = soup.new_tag("span", attrs={'class': 'text-original'})
+            span_orig.string = orig
+            span_kana = soup.new_tag("span", attrs={'class': 'text-kana'})
+            span_kana.string = kana
+            
+            new_tag.append(span_orig)
+            new_tag.append(span_kana)
+            text_node.replace_with(new_tag)
+    return str(soup)
 
 def get_train_info_url(model, name):
     base_url = "https://www.jreast.co.jp/train/"
@@ -734,6 +762,11 @@ def generate_html(req_name, title, description, train_list):
                 box-shadow: 0 10px 40px rgba(0,0,0,0.4);
                 border: 2px solid var(--primary-color);
             }}
+
+            /* ひらがなモード */
+            .text-kana {{ display: none; }}
+            body.hiragana-mode .text-original {{ display: none !important; }}
+            body.hiragana-mode .text-kana {{ display: inline !important; }}
         }}
     </style>
 </head>
@@ -748,6 +781,10 @@ def generate_html(req_name, title, description, train_list):
         </header>
 
         <div class="filters">
+            <label class="filter-item">
+                <input type="checkbox" id="hiraganaToggle">
+                <span>👶 ひらがなモード (2さい)</span>
+            </label>
             <label class="filter-item">
                 <input type="checkbox" id="timeFilter">
                 <span>現在時刻より10分以上前を隠す</span>
@@ -995,6 +1032,19 @@ def generate_html(req_name, title, description, train_list):
                 applyFilters();
             }});
 
+            // 👶 ひらがなモードのJS制御
+            const hiraganaToggle = document.getElementById('hiraganaToggle');
+            if (hiraganaToggle) {{
+                hiraganaToggle.addEventListener('change', (e) => {{
+                    document.body.classList.toggle('hiragana-mode', e.target.checked);
+                    localStorage.setItem('hiraganaMode', e.target.checked);
+                }});
+                if (localStorage.getItem('hiraganaMode') === 'true') {{
+                    hiraganaToggle.checked = true;
+                    document.body.classList.add('hiragana-mode');
+                }}
+            }}
+
             // 初期化
             loadSettings();
             applyFilters();
@@ -1003,6 +1053,7 @@ def generate_html(req_name, title, description, train_list):
 </body>
 </html>
 """
+    html = apply_hiragana_markup(html)
     filename = f"timetable_{req_name}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html)
