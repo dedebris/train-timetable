@@ -1037,11 +1037,19 @@ def generate_html(req_name, title, description, train_list):
             if (hiraganaToggle) {{
                 hiraganaToggle.addEventListener('change', (e) => {{
                     document.body.classList.toggle('hiragana-mode', e.target.checked);
-                    localStorage.setItem('hiraganaMode', e.target.checked);
+                    try {{
+                        localStorage.setItem('hiraganaMode', e.target.checked);
+                    }} catch(err) {{
+                        console.warn("localStorage not available", err);
+                    }}
                 }});
-                if (localStorage.getItem('hiraganaMode') === 'true') {{
-                    hiraganaToggle.checked = true;
-                    document.body.classList.add('hiragana-mode');
+                try {{
+                    if (localStorage.getItem('hiraganaMode') === 'true') {{
+                        hiraganaToggle.checked = true;
+                        document.body.classList.add('hiragana-mode');
+                    }}
+                }} catch(err) {{
+                    console.warn("localStorage not available", err);
                 }}
             }}
 
@@ -1054,6 +1062,9 @@ def generate_html(req_name, title, description, train_list):
 </html>
 """
     html = apply_hiragana_markup(html)
+    # pykakasi が消去してしまった絵文字を強引に復元
+    html = html.replace('<span class="text-kana"> ひらがなもーど (2さい)</span>', '<span class="text-kana">👶 ひらがなもーど (2さい)</span>')
+    
     filename = f"timetable_{req_name}.html"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html)

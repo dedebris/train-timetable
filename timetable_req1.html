@@ -379,7 +379,7 @@
 <div class="filters">
 <label class="filter-item">
 <input id="hiraganaToggle" type="checkbox"/>
-<span><span><span class="text-original">👶 ひらがなモード (2さい)</span><span class="text-kana"> ひらがなもーど (2さい)</span></span></span>
+<span><span><span class="text-original">👶 ひらがなモード (2さい)</span><span class="text-kana">👶 ひらがなもーど (2さい)</span></span></span>
 </label>
 <label class="filter-item">
 <input id="timeFilter" type="checkbox"/>
@@ -2443,11 +2443,19 @@
             if (hiraganaToggle) {
                 hiraganaToggle.addEventListener('change', (e) => {
                     document.body.classList.toggle('hiragana-mode', e.target.checked);
-                    localStorage.setItem('hiraganaMode', e.target.checked);
+                    try {
+                        localStorage.setItem('hiraganaMode', e.target.checked);
+                    } catch(err) {
+                        console.warn("localStorage not available", err);
+                    }
                 });
-                if (localStorage.getItem('hiraganaMode') === 'true') {
-                    hiraganaToggle.checked = true;
-                    document.body.classList.add('hiragana-mode');
+                try {
+                    if (localStorage.getItem('hiraganaMode') === 'true') {
+                        hiraganaToggle.checked = true;
+                        document.body.classList.add('hiragana-mode');
+                    }
+                } catch(err) {
+                    console.warn("localStorage not available", err);
                 }
             }
 
